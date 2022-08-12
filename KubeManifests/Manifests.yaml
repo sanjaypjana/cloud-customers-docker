@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: dotnet6webapi
+  name: dotnet6webapi
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dotnet6webapi
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dotnet6webapi
+    spec:
+      containers:
+      - image: sanjayjanarthanan/dotnetwebapi
+        name: webapi
+        resources: {}
+        ports:
+        - containerPort: 7000
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:7000"
+status: {}
+
+----
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: dotnet6webapi
+  name: dotnet6webapiservice
+  namespace: dev
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 7000
+  selector:
+    app: dotnet6webapi
+status:
+  loadBalancer: {}
+
+----
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: dev
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "sanjayjanarthanan.click"
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: hello-service
+              port:
+                number: 80
+        - pathType: Prefix
+          path: "/users"
+          backend:
+            service:
+              name: dotnet6webapiservice
+              port:
+                number: 80
+
+----
