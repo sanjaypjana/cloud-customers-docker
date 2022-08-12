@@ -9,7 +9,7 @@ pipeline {
 
     stage('Checkout stage') {
       steps {
-        git 'https://github.com/sanjaypjana/dotnetwebapi'
+        git 'https://github.com/sanjaypjana/cloud-customers-docker'
       }
     }
 
