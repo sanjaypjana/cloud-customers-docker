@@ -20,7 +20,7 @@ pipeline {
         }
       }
     }
-    stage('Build image') {
+    stage('scan image') {
       steps{
         sh "trivy image dockerimagename > imagescanning.txt"
       }
