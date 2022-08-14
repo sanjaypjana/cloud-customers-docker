@@ -20,7 +20,13 @@ pipeline {
         }
       }
     }
-
+    
+    stage('Scan image') {
+      steps{
+        sh "trivy image dockerimagename > imageresults.txt"
+      }
+    }
+    
     stage('Pushing Image') {
       environment {
                registryCredential = 'pulldockerlogin'
