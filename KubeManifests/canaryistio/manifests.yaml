@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    version: canary
+  name: dotnet6webapi
+  namespace: istio-test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dotnet6webapi
+  strategy: {}
+
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dotnet6webapi
+        version: canary
+    spec:
+      containers:
+      - image: sanjayjanarthanan/dotnetwebapi:canary
+        name: webapi
+        resources: {}
+        ports:
+        - containerPort: 7000
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:7000"
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    version: v1
+  name: dotnet6webapi
+  namespace: istio-test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dotnet6webapi
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dotnet6webapi
+        version: v1
+    spec:
+      containers:
+      - image: sanjayjanarthanan/dotnetwebapi
+        name: webapi
+        resources: {}
+        ports:
+        - containerPort: 7000
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:7000"
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: dotnet6webapi
+  name: dotnet6webapiservice
+  namespace: istio-test
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 7000
+  selector:
+    app: dotnet6webapi
+status:
+  loadBalancer: {}
+
+---
