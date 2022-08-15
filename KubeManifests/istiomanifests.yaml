@@ -36,10 +36,10 @@ spec:
       weight: 100
   - match:
     - uri:
-        prefix: "/"
+        prefix: "/health"
     route:
     - destination:
-        host: hello-service
+        host: dotnet6webapiservice
         port:
           number: 80
       weight: 100
